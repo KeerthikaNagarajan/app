@@ -6,31 +6,12 @@ import matplotlib.pyplot as plt
 # --- Page Theme Styling ---
 st.markdown("""
     <style>
-    .main {
-        background-color: #f4f9ff;
+    .main { background-color: #f0f8ff; color: #003366; }
+    .stButton>button {
+        background-color: #007acc; color: white;
+        border-radius: 8px; padding: 10px;
     }
-    h1, h2, h3, h4, h5, h6 {
-        color: #003366;
-    }
-    .stButton > button {
-        background-color: #004b8d;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-weight: bold;
-    }
-    .stRadio > div > div {
-        color: #003366;
-    }
-    .css-1cpxqw2 {
-        color: #003366;
-    }
-    .stSelectbox, .stDataFrameContainer {
-        background-color: white !important;
-    }
-    .css-1offfwp, .css-qrbaxs {
-        background-color: #e6f0ff !important;
-    }
+    .stRadio>div>div { color: #003366; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -89,34 +70,33 @@ def take_quiz(skill, user):
             user['skills'][skill] += 1
             st.info(f"Skill level for {skill} updated to {user['skills'][skill]}")
 
-# --- Real-Time Learning Module Simulation ---
+# --- Real-Time Learning Module ---
 def show_learning_module(skill):
-    st.info(f"📘 You're now in the {skill} Learning Module. Complete these to upgrade.")
-    videos = {
-        "Python": "https://www.youtube.com/watch?v=kqtD5dpn9C8",
-        "SQL": "https://www.youtube.com/watch?v=HXV3zeQKqGY",
-        "Cloud": "https://www.youtube.com/watch?v=2LaAJq1lB1Q",
-        "ETL": "https://www.youtube.com/watch?v=0CnY3n3EHz4",
-        "ML": "https://www.youtube.com/watch?v=Gv9_4yMHFhI",
-        "Visualization": "https://www.youtube.com/watch?v=RLVb4Uchj_g",
-        "Deep Learning": "https://www.youtube.com/watch?v=aircAruvnKk"
-    }
-
-    links = {
-        "Python": "https://www.w3schools.com/python/",
-        "SQL": "https://sqlbolt.com",
-        "Cloud": "https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/",
-        "ETL": "https://www.ibm.com/cloud/learn/etl",
-        "ML": "https://developers.google.com/machine-learning/crash-course",
-        "Visualization": "https://learn.microsoft.com/en-us/training/modules/introduction-power-bi/",
-        "Deep Learning": "https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr"
-    }
-
-    st.video(videos[skill])
-    st.markdown(f"[🔗 Learn more about {skill}]({links[skill]})")
+    st.info(f"📘 You're now in the {skill} Learning Module.")
+    if skill == "Python":
+        st.video("https://www.youtube.com/watch?v=kqtD5dpn9C8")
+        st.markdown("[🔗 W3Schools Python](https://www.w3schools.com/python/)")
+    elif skill == "SQL":
+        st.video("https://www.youtube.com/watch?v=HXV3zeQKqGY")
+        st.markdown("[🔗 SQL Bolt](https://sqlbolt.com)")
+    elif skill == "Cloud":
+        st.video("https://www.youtube.com/watch?v=2LaAJq1lB1Q")
+        st.markdown("[🔗 Azure Fundamentals - MS Learn](https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/)")
+    elif skill == "ETL":
+        st.video("https://www.youtube.com/watch?v=0CnY3n3EHz4")
+        st.markdown("[🔗 ETL Basics - IBM](https://www.ibm.com/cloud/learn/etl)")
+    elif skill == "ML":
+        st.video("https://www.youtube.com/watch?v=Gv9_4yMHFhI")
+        st.markdown("[🔗 Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course)")
+    elif skill == "Visualization":
+        st.video("https://www.youtube.com/watch?v=RLVb4Uchj_g")
+        st.markdown("[🔗 Power BI Learning](https://learn.microsoft.com/en-us/training/modules/introduction-power-bi/)")
+    elif skill == "Deep Learning":
+        st.video("https://www.youtube.com/watch?v=aircAruvnKk")
+        st.markdown("[🔗 Deep Learning by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr)")
     st.success("✅ Module Completed! Progress would be tracked.")
 
-# --- Streamlit UI ---
+# --- Streamlit UI Setup ---
 st.set_page_config(layout="wide", page_title="Skill-Gap Analyzer", page_icon="📊")
 st.title("📊 Skill-Gap Analyzer")
 
@@ -141,16 +121,14 @@ if view == "Learner Dashboard":
     if gaps:
         fig, ax = plt.subplots()
         ax.bar(gaps.keys(), gaps.values(), color='tomato')
-        ax.set_title("Skill Gap Levels", fontsize=14)
-        ax.set_ylabel("Gap Level")
-        ax.set_xlabel("Skills")
+        ax.set_title("Skill Gap Levels")
         col2.pyplot(fig)
     else:
         col2.success("No skill gaps! You're aligned with TSR expectations.")
 
     col2.markdown("### 🗺️ Personalized Learning Path")
     for skill, gap in gaps.items():
-        col2.markdown(f"**{skill}** — Improve by {gap} level(s). Why it matters: _Critical for your role_.")
+        col2.markdown(f"**{skill}** — Improve by {gap} level(s). _Critical for your role_.")
         col2.progress(1 - (gap / tsr_skills[user["role"]][skill]))
         if col2.button(f"📘 Start {skill} Module", key=f"start_{skill}_{user['name']}"):
             show_learning_module(skill)
@@ -184,4 +162,3 @@ elif view == "Admin Console":
     - 🧭 **Recommender Agent**: ✅ Live  
     - 📈 **Tracker Agent**: ⏳ Monitoring
     """)
-
