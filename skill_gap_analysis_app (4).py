@@ -7,17 +7,29 @@ import matplotlib.pyplot as plt
 st.markdown("""
     <style>
     .main {
-        background-color: #f0f8ff;
+        background-color: #f4f9ff;
+    }
+    h1, h2, h3, h4, h5, h6 {
         color: #003366;
     }
-    .stButton>button {
-        background-color: #007acc;
+    .stButton > button {
+        background-color: #004b8d;
         color: white;
         border-radius: 8px;
-        padding: 10px;
+        padding: 10px 20px;
+        font-weight: bold;
     }
-    .stRadio>div>div {
+    .stRadio > div > div {
         color: #003366;
+    }
+    .css-1cpxqw2 {
+        color: #003366;
+    }
+    .stSelectbox, .stDataFrameContainer {
+        background-color: white !important;
+    }
+    .css-1offfwp, .css-qrbaxs {
+        background-color: #e6f0ff !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -80,27 +92,28 @@ def take_quiz(skill, user):
 # --- Real-Time Learning Module Simulation ---
 def show_learning_module(skill):
     st.info(f"📘 You're now in the {skill} Learning Module. Complete these to upgrade.")
-    if skill == "Python":
-        st.video("https://www.youtube.com/watch?v=kqtD5dpn9C8")
-        st.markdown("[🔗 W3Schools Python](https://www.w3schools.com/python/)")
-    elif skill == "SQL":
-        st.video("https://www.youtube.com/watch?v=HXV3zeQKqGY")
-        st.markdown("[🔗 SQL Bolt](https://sqlbolt.com)")
-    elif skill == "Cloud":
-        st.video("https://www.youtube.com/watch?v=2LaAJq1lB1Q")
-        st.markdown("[🔗 Azure Fundamentals - MS Learn](https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/)")
-    elif skill == "ETL":
-        st.video("https://www.youtube.com/watch?v=0CnY3n3EHz4")
-        st.markdown("[🔗 ETL Basics - IBM](https://www.ibm.com/cloud/learn/etl)")
-    elif skill == "ML":
-        st.video("https://www.youtube.com/watch?v=Gv9_4yMHFhI")
-        st.markdown("[🔗 Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course)")
-    elif skill == "Visualization":
-        st.video("https://www.youtube.com/watch?v=RLVb4Uchj_g")
-        st.markdown("[🔗 Data Viz with Power BI](https://learn.microsoft.com/en-us/training/modules/introduction-power-bi/)")
-    elif skill == "Deep Learning":
-        st.video("https://www.youtube.com/watch?v=aircAruvnKk")
-        st.markdown("[🔗 Deep Learning by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr)")
+    videos = {
+        "Python": "https://www.youtube.com/watch?v=kqtD5dpn9C8",
+        "SQL": "https://www.youtube.com/watch?v=HXV3zeQKqGY",
+        "Cloud": "https://www.youtube.com/watch?v=2LaAJq1lB1Q",
+        "ETL": "https://www.youtube.com/watch?v=0CnY3n3EHz4",
+        "ML": "https://www.youtube.com/watch?v=Gv9_4yMHFhI",
+        "Visualization": "https://www.youtube.com/watch?v=RLVb4Uchj_g",
+        "Deep Learning": "https://www.youtube.com/watch?v=aircAruvnKk"
+    }
+
+    links = {
+        "Python": "https://www.w3schools.com/python/",
+        "SQL": "https://sqlbolt.com",
+        "Cloud": "https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/",
+        "ETL": "https://www.ibm.com/cloud/learn/etl",
+        "ML": "https://developers.google.com/machine-learning/crash-course",
+        "Visualization": "https://learn.microsoft.com/en-us/training/modules/introduction-power-bi/",
+        "Deep Learning": "https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr"
+    }
+
+    st.video(videos[skill])
+    st.markdown(f"[🔗 Learn more about {skill}]({links[skill]})")
     st.success("✅ Module Completed! Progress would be tracked.")
 
 # --- Streamlit UI ---
@@ -128,7 +141,9 @@ if view == "Learner Dashboard":
     if gaps:
         fig, ax = plt.subplots()
         ax.bar(gaps.keys(), gaps.values(), color='tomato')
-        ax.set_title("Skill Gap Levels")
+        ax.set_title("Skill Gap Levels", fontsize=14)
+        ax.set_ylabel("Gap Level")
+        ax.set_xlabel("Skills")
         col2.pyplot(fig)
     else:
         col2.success("No skill gaps! You're aligned with TSR expectations.")
@@ -169,3 +184,4 @@ elif view == "Admin Console":
     - 🧭 **Recommender Agent**: ✅ Live  
     - 📈 **Tracker Agent**: ⏳ Monitoring
     """)
+
