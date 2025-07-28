@@ -103,7 +103,10 @@ if view == "Learner Dashboard":
     col2.header("👩‍🎓 Learner Dashboard")
     col2.markdown(f"### 👤 Profile: {user['name']}")
     col2.write(f"**Role:** {user['role']}")
-    col2.write("**Current Skills:**", user["skills"])
+    col2.write("**Current Skills:**")
+for skill, level in user["skills"].items():
+    col2.write(f"- {skill}: {level}")
+
 
     col2.markdown("### 📉 Skill Gap")
     if gaps:
