@@ -1,7 +1,6 @@
 # streamlit_app.py
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import io
 
 # --- Synthetic TSR Skill Data ---
@@ -33,24 +32,6 @@ def calculate_skill_gap(user):
             gaps[skill] = expected - current
     return gaps
 
-# --- Dashboard Chart ---
-def display_skill_gap_chart(user):
-    tsr = tsr_skills[user["role"]]
-    skills = list(tsr.keys())
-    expected = list(tsr.values())
-    actual = [user["skills"].get(skill, 0) for skill in skills]
-
-    fig, ax = plt.subplots()
-    x = range(len(skills))
-    ax.bar(x, expected, width=0.4, label="Expected", align='center')
-    ax.bar([p + 0.4 for p in x], actual, width=0.4, label="Current", align='center')
-    ax.set_xticks([p + 0.2 for p in x])
-    ax.set_xticklabels(skills)
-    ax.set_ylabel("Skill Level")
-    ax.set_title("Skill Gap Overview")
-    ax.legend()
-    st.pyplot(fig)
-
 # --- Quiz Simulator ---
 def take_quiz(skill, user):
     st.subheader(f"📝 Quiz: {skill}")
@@ -65,7 +46,7 @@ def take_quiz(skill, user):
         q1 = st.radio("Which is a cloud provider?", ["AWS", "HTML", "NumPy"])
         if q1 == "AWS": score += 1
 
-    if st.button("Submit Quiz"):
+    if st.button("Submit Quiz", key=f"submit_{skill}_{user['name']}"):
         st.success(f"You scored {score}/1 on the {skill} quiz.")
         if score == 1:
             user['skills'][skill] += 1
@@ -95,20 +76,17 @@ if view == "Learner Dashboard":
     st.write(f"**Role:** {user['role']}")
     st.write("**Current Skills:**", user["skills"])
 
-    st.markdown("### 📊 Skill Gap Chart")
-    display_skill_gap_chart(user)
-
-    st.markdown("### 🧠 Skill Gap")
+    st.markdown("### 🤠 Skill Gap")
     if gaps:
         st.table(pd.DataFrame(gaps.items(), columns=["Skill", "Gap"]))
     else:
         st.success("No skill gaps! You're aligned with TSR expectations.")
 
-    st.markdown("### 🗏️ Learning Path Recommendations")
+    st.markdown("### 🗟️️ Learning Path Recommendations")
     for skill, gap in gaps.items():
         st.markdown(f"**{skill}** — Improve by {gap} level(s). Why it matters: _Critical for role expectations_.")
         st.progress(1 - (gap / tsr_skills[user["role"]][skill]))
-        if st.button(f"Start {skill} Module"):
+        if st.button(f"Start {skill} Module", key=f"start_{skill}_{user['name']}"):
             show_learning_module(skill)
         with st.expander(f"Take {skill} Quiz"):
             take_quiz(skill, user)
